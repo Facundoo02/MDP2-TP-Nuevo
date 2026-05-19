@@ -8,7 +8,7 @@ package classNames
 	add: #Compra;
 	add: #DetalleCompra;
 	add: #Producto;
-	add: #Proveedores;
+	add: #Proveedor;
 	add: #Supermercado;
 	yourself.
 
@@ -19,7 +19,7 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin').
+	'..\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin').
 
 package!
 
@@ -32,7 +32,7 @@ Object subclass: #Cliente
 	classInstanceVariableNames: ''!
 
 Object subclass: #Compra
-	instanceVariableNames: 'idcompra cliente monto fecha detalles'
+	instanceVariableNames: 'idcompra cliente monto fecha detalles estado'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -49,7 +49,7 @@ Object subclass: #Producto
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 
-Object subclass: #Proveedores
+Object subclass: #Proveedor
 	instanceVariableNames: 'id nombre'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -104,14 +104,21 @@ calcularTotal
 	^ total
 	!
 
+cancelarCompra
+	"Cambiar estado de la compra a Cancelada"
+		cliente aggCompra: self.
+		estado := 'Cancelado'.!
+
 confirmarCompra	
-	cliente aggCompra: self!
+	cliente aggCompra: self.
+	estado := 'Confirmado'.!
 
 verProductos
 	 detalles do: [:detalle | Transcript show: detalle verProducto ]! !
 
 !Compra categoriesForMethods!
 calcularTotal!public! !
+cancelarCompra!public! !
 confirmarCompra!public! !
 verProductos!public! !
 !
@@ -179,11 +186,11 @@ getPrecio!public! !
 verStock!public! !
 !
 
-Proveedores guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
+Proveedor guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
 
-Proveedores comment: ''!
+Proveedor comment: ''!
 
-!Proveedores categoriesForClass!SupermercadoTP-MDP2! !
+!Proveedor categoriesForClass!SupermercadoTP-MDP2! !
 
 Supermercado guid: (GUID fromString: '{3707201f-c80f-429c-8830-7f6096715cea}')!
 
