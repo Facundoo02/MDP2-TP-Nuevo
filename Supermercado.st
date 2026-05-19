@@ -1,0 +1,1 @@
+﻿Object subclass: #Supermercado instanceVariableNames: 'empleados productos clientes proveedores' classVariableNames: '' poolDictionaries: '' category: 'SupermercadoTP-MDP2'Supermercado
