@@ -106,7 +106,6 @@ calcularTotal
 
 cancelarCompra
 	"Cambiar estado de la compra a Cancelada"
-		cliente aggCompra: self.
 		estado := 'Cancelado'.!
 
 confirmarCompra	
