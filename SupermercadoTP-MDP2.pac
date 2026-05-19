@@ -32,7 +32,7 @@ Object subclass: #Cliente
 	classInstanceVariableNames: ''!
 
 Object subclass: #Compra
-	instanceVariableNames: 'idcompra dnicliente monto fecha detalles'
+	instanceVariableNames: 'idcompra cliente monto fecha detalles'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -44,7 +44,7 @@ Object subclass: #DetalleCompra
 	classInstanceVariableNames: ''!
 
 Object subclass: #Producto
-	instanceVariableNames: 'id nombre categoria stock precio'
+	instanceVariableNames: 'id nombre stock precio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -73,11 +73,48 @@ Cliente comment: ''!
 
 !Cliente categoriesForClass!SupermercadoTP-MDP2! !
 
+!Cliente methodsFor!
+
+aggCompra:unaCompra
+	compras add:unaCompra!
+
+verCompras
+	compras do: [:compra| Transcript show: compra printString; cr]! !
+
+!Cliente categoriesForMethods!
+aggCompra:!public! !
+verCompras!public! !
+!
+
 Compra guid: (GUID fromString: '{9fe2b46e-974f-4ab4-a67f-b609399424f5}')!
 
 Compra comment: ''!
 
 !Compra categoriesForClass!SupermercadoTP-MDP2! !
+
+!Compra methodsFor!
+
+calcularTotal
+	|total| "Defino una variable para ir acumulando el total"
+
+	total := 0 ."La inicio en 0"
+	
+	detalles do: [:detalle |	
+	total := total + detalle calcularSubTotal  ].
+	^ total
+	!
+
+confirmarCompra	
+	cliente aggCompra: self!
+
+verProductos
+	 detalles do: [:detalle | Transcript show: detalle verProducto ]! !
+
+!Compra categoriesForMethods!
+calcularTotal!public! !
+confirmarCompra!public! !
+verProductos!public! !
+!
 
 DetalleCompra guid: (GUID fromString: '{754090d8-d4f6-4654-9359-0aaf2e1a9166}')!
 
@@ -85,11 +122,62 @@ DetalleCompra comment: ''!
 
 !DetalleCompra categoriesForClass!SupermercadoTP-MDP2! !
 
+!DetalleCompra methodsFor!
+
+calcularSubTotal
+	^ cantidad * producto getPrecio!
+
+verProducto	
+	^ producto! !
+
+!DetalleCompra categoriesForMethods!
+calcularSubTotal!public! !
+verProducto!public! !
+!
+
 Producto guid: (GUID fromString: '{3a2efebd-5130-4f00-b971-a18233135e0f}')!
 
 Producto comment: ''!
 
 !Producto categoriesForClass!SupermercadoTP-MDP2! !
+
+!Producto methodsFor!
+
+actualizarPrecio:nuevoPrecio
+	(nuevoPrecio >0)
+	ifTrue: [precio :=nuevoPrecio 
+	Transcript show: 'Precio actualizado correctamente'
+	] 
+	ifFalse:[Transcript show: 'Ingrese un valor valido' ]
+	!
+
+aumentarStock:cant
+	(cant>0)
+		ifFalse:[	
+		Transcript show:'Ingrese una cantidad valida'].
+	stock:=stock + cant
+	Transcript show:'Stock actualizado correctamente'!
+
+disminuirStock:cant
+	(cant>0)
+		ifFalse:[	
+		Transcript show:'Ingrese una cantidad valida'].
+	stock:=stock - cant
+	Transcript show:'Stock actualizado correctamente'!
+
+getPrecio
+	^ precio!
+
+verStock
+	^ stock! !
+
+!Producto categoriesForMethods!
+actualizarPrecio:!public! !
+aumentarStock:!public! !
+disminuirStock:!public! !
+getPrecio!public! !
+verStock!public! !
+!
 
 Proveedores guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
 
