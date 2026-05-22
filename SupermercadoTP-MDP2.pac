@@ -19,7 +19,7 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin').
+	'..\..\Users\axelp\OneDrive\Desktop\dolphin\Core\Object Arts\Dolphin\Base\Dolphin').
 
 package!
 
@@ -174,6 +174,13 @@ disminuirStock:cant
 getPrecio
 	^ precio!
 
+getStock
+        ^ stock!
+
+initialize
+	super initialize.
+	stock := 0.!
+
 verStock
 	^ stock! !
 
@@ -182,6 +189,8 @@ actualizarPrecio:!public! !
 aumentarStock:!public! !
 disminuirStock:!public! !
 getPrecio!public! !
+getStock!public! !
+initialize!public! !
 verStock!public! !
 !
 
@@ -190,6 +199,16 @@ Proveedor guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
 Proveedor comment: ''!
 
 !Proveedor categoriesForClass!SupermercadoTP-MDP2! !
+
+!Proveedor methodsFor!
+
+suministrarProducto:unProducto cantidad:unaCantidad
+	unProducto aumentarStock: unaCantidad.
+	Transcript show: 'Producto suministrado correctamente'! !
+
+!Proveedor categoriesForMethods!
+suministrarProducto:cantidad:!public! !
+!
 
 Supermercado guid: (GUID fromString: '{3707201f-c80f-429c-8830-7f6096715cea}')!
 
