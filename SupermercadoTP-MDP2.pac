@@ -159,17 +159,32 @@ actualizarPrecio:nuevoPrecio
 
 aumentarStock:cant
 	(cant>0)
+		ifTrue: [
+			stock := stock + cant.
+			Transcript show:'Stock actualizado correctamente'
+		]
 		ifFalse:[	
-		Transcript show:'Ingrese una cantidad valida'].
-	stock:=stock + cant
-	Transcript show:'Stock actualizado correctamente'!
+			Transcript show:'Ingrese una cantidad valida'
+		]
+	!
 
 disminuirStock:cant
-	(cant>0)
-		ifFalse:[	
-		Transcript show:'Ingrese una cantidad valida'].
-	stock:=stock - cant
-	Transcript show:'Stock actualizado correctamente'!
+	(cant <= 0)
+		ifTrue:[
+			Transcript show:'Ingrese una cantidad valida '
+		]
+		ifFalse:[
+			(cant > stock)
+				ifTrue:[
+					Transcript show:'No hay suficiente stock '
+				]
+				ifFalse:[
+					stock := stock - cant.
+					Transcript show:'Stock actualizado correctamente '
+				]
+		]
+
+!
 
 getPrecio
 	^ precio!
