@@ -91,10 +91,12 @@ initialize
 	super initialize.
 	clientes := OrderedCollection new.!
 
-modificarNombreCliente: unaPos nuevoNombre: unNombre
-    | cliente |
-    cliente := self buscarCliente: unaPos.
-    cliente ~= nil ifTrue: [ cliente setNombre: unNombre ]. "Seteanmos el nombre del cliente"!
+modificarNombreCliente: unDni nuevoNombre: unNombre
+	| cliente |
+	
+	cliente := self buscarClientePorDni: unDni. "<- Usamos el método correcto por posición"
+	
+	cliente ~= nil ifTrue: [ cliente setNombre: unNombre ]!
 
 setNombre: unNombre
 	nombre := unNombre.!
