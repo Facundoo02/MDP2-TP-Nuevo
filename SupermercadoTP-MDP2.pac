@@ -26,7 +26,7 @@ package!
 "Class Definitions"!
 
 Object subclass: #Cliente
-	instanceVariableNames: 'dni clave nombre apellido compras'
+	instanceVariableNames: 'dni clave nombre apellido compras clientes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -75,14 +75,45 @@ Cliente comment: ''!
 
 !Cliente methodsFor!
 
+aggCliente:unCliente	
+	clientes add:unCliente!
+
 aggCompra:unaCompra
 	compras add:unaCompra.!
+
+buscarClientePorDni: unDni
+	^ clientes detect: [ :cadaCliente | cadaCliente getDni = unDni ] ifNone: [ nil ]!
+
+cantClientes
+	^ clientes size!
+
+initialize
+	super initialize.
+	clientes := OrderedCollection new.!
+
+modificarNombreCliente: unaPos nuevoNombre: unNombre
+    | cliente |
+    cliente := self buscarCliente: unaPos.
+    cliente ~= nil ifTrue: [ cliente setNombre: unNombre ]. "Seteanmos el nombre del cliente"!
+
+setNombre: unNombre
+	nombre := unNombre.!
+
+verClientes
+	^ clientes!
 
 verCompras
 	compras do: [:compra| Transcript show: compra printString; cr]! !
 
 !Cliente categoriesForMethods!
+aggCliente:!public! !
 aggCompra:!public! !
+buscarClientePorDni:!public! !
+cantClientes!public! !
+initialize!public! !
+modificarNombreCliente:nuevoNombre:!public! !
+setNombre:!public! !
+verClientes!public! !
 verCompras!public! !
 !
 
