@@ -7,6 +7,7 @@ package classNames
 	add: #Cliente;
 	add: #Compra;
 	add: #DetalleCompra;
+	add: #Empleado;
 	add: #Producto;
 	add: #Proveedor;
 	add: #Supermercado;
@@ -19,14 +20,14 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin').
+	'..\..\Users\axelp\OneDrive\Desktop\dolphin\Core\Object Arts\Dolphin\Base\Dolphin').
 
 package!
 
 "Class Definitions"!
 
 Object subclass: #Cliente
-	instanceVariableNames: 'dni clave nombre apellido compras clientes'
+	instanceVariableNames: 'dni clave nombre apellido compras'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -39,6 +40,12 @@ Object subclass: #Compra
 
 Object subclass: #DetalleCompra
 	instanceVariableNames: 'id compra producto cantidad subtotal'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+
+Object subclass: #Empleado
+	instanceVariableNames: 'legajo nombre cargo'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -75,47 +82,65 @@ Cliente comment: ''!
 
 !Cliente methodsFor!
 
-aggCliente:unCliente	
-	clientes add:unCliente!
+actualizarApellido:nuevoApellido
+	apellido := nuevoApellido.!
+
+actualizarClave:nuevaClave
+	clave := nuevaClave.!
+
+actualizarNombre: unNombre
+	nombre := unNombre.!
 
 aggCompra:unaCompra
 	compras add:unaCompra.!
 
-buscarClientePorDni: unDni
-	^ clientes detect: [ :cadaCliente | cadaCliente getDni = unDni ] ifNone: [ nil ]!
+elimCompra: unaCompra
+	compras remove:unaCompra ifAbsent:[nil]!
 
-cantClientes
-	^ clientes size!
+getDni
+	^ dni!
 
 initialize
 	super initialize.
-	clientes := OrderedCollection new.!
+	compras := OrderedCollection new.!
+
+modificarApellidoCliente: unDni nuevoApellido: unApellido
+	| cliente |
+	
+	cliente := self buscarClientePorDni: unDni. "<- Usamos el método correcto por posición"
+	
+	cliente ~= nil ifTrue: [ cliente actualizarApellido: unApellido ]!
+
+modificarClaveCliente: unDni nuevaClave: unaClave
+	| cliente |
+	
+	cliente := self buscarClientePorDni: unDni.
+	
+	cliente ~= nil ifTrue:[
+		cliente actualizarClave: unaClave
+	]!
 
 modificarNombreCliente: unDni nuevoNombre: unNombre
 	| cliente |
 	
 	cliente := self buscarClientePorDni: unDni. "<- Usamos el método correcto por posición"
 	
-	cliente ~= nil ifTrue: [ cliente setNombre: unNombre ]!
-
-setNombre: unNombre
-	nombre := unNombre.!
-
-verClientes
-	^ clientes!
+	cliente ~= nil ifTrue: [ cliente actualizarNombre:  unNombre ]!
 
 verCompras
 	compras do: [:compra| Transcript show: compra printString; cr]! !
 
 !Cliente categoriesForMethods!
-aggCliente:!public! !
+actualizarApellido:!public! !
+actualizarClave:!public! !
+actualizarNombre:!public! !
 aggCompra:!public! !
-buscarClientePorDni:!public! !
-cantClientes!public! !
+elimCompra:!public! !
+getDni!public! !
 initialize!public! !
+modificarApellidoCliente:nuevoApellido:!public! !
+modificarClaveCliente:nuevaClave:!public! !
 modificarNombreCliente:nuevoNombre:!public! !
-setNombre:!public! !
-verClientes!public! !
 verCompras!public! !
 !
 
@@ -174,6 +199,37 @@ calcularSubTotal!public! !
 verProducto!public! !
 !
 
+Empleado guid: (GUID fromString: '{b2b69d51-dba4-497c-a5f1-0320255ac601}')!
+
+Empleado comment: ''!
+
+!Empleado categoriesForClass!Unclassified! !
+
+!Empleado methodsFor!
+
+actualizarCargo:nuevoCargo
+	cargo := nuevoCargo.!
+
+actualizarNombre:nuevoNombre
+	nombre := nuevoNombre.!
+
+getCargo
+	^ cargo!
+
+getLegajo
+	^ legajo!
+
+getNombre
+	^ nombre! !
+
+!Empleado categoriesForMethods!
+actualizarCargo:!public! !
+actualizarNombre:!public! !
+getCargo!public! !
+getLegajo!public! !
+getNombre!public! !
+!
+
 Producto guid: (GUID fromString: '{3a2efebd-5130-4f00-b971-a18233135e0f}')!
 
 Producto comment: ''!
@@ -181,6 +237,9 @@ Producto comment: ''!
 !Producto categoriesForClass!SupermercadoTP-MDP2! !
 
 !Producto methodsFor!
+
+actualizarNombre: nuevoNombre
+	nombre:=nuevoNombre.!
 
 actualizarPrecio:nuevoPrecio
 	(nuevoPrecio >0)
@@ -192,17 +251,35 @@ actualizarPrecio:nuevoPrecio
 
 aumentarStock:cant
 	(cant>0)
+		ifTrue: [
+			stock := stock + cant.
+			Transcript show:'Stock actualizado correctamente'
+		]
 		ifFalse:[	
-		Transcript show:'Ingrese una cantidad valida'].
-	stock:=stock + cant.
-	Transcript show:'Stock actualizado correctamente'!
+			Transcript show:'Ingrese una cantidad valida'
+		]!
 
 disminuirStock:cant
-	(cant>0)
-		ifFalse:[	
-		Transcript show:'Ingrese una cantidad valida'].
-	stock:=stock - cant.
-	Transcript show:'Stock actualizado correctamente'!
+	(cant <= 0)
+		ifTrue:[
+			Transcript show:'Ingrese una cantidad valida '
+		]
+		ifFalse:[
+			(cant > stock)
+				ifTrue:[
+					Transcript show:'No hay suficiente stock '
+				]
+				ifFalse:[
+					stock := stock - cant.
+					Transcript show:'Stock actualizado correctamente '
+				]
+		]!
+
+getId
+	^ id!
+
+getNombre
+	^ nombre!
 
 getPrecio
 	^ precio!
@@ -211,9 +288,12 @@ verStock
 	^ stock! !
 
 !Producto categoriesForMethods!
+actualizarNombre:!public! !
 actualizarPrecio:!public! !
 aumentarStock:!public! !
 disminuirStock:!public! !
+getId!public! !
+getNombre!public! !
 getPrecio!public! !
 verStock!public! !
 !
@@ -223,6 +303,24 @@ Proveedor guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
 Proveedor comment: ''!
 
 !Proveedor categoriesForClass!SupermercadoTP-MDP2! !
+
+!Proveedor methodsFor!
+
+actualizarNombre: unNombre
+	nombre:=unNombre.!
+
+getId
+	^ id!
+
+suministrarProducto:unProducto cantidad:unaCantidad
+	unProducto aumentarStock: unaCantidad.
+	Transcript show: 'Producto suministrado correctamente'! !
+
+!Proveedor categoriesForMethods!
+actualizarNombre:!public! !
+getId!public! !
+suministrarProducto:cantidad:!public! !
+!
 
 Supermercado guid: (GUID fromString: '{3707201f-c80f-429c-8830-7f6096715cea}')!
 
@@ -244,25 +342,25 @@ aggProducto:unProducto
 aggProveedor:unProveedor	
 	proveedores add:unProveedor!
 
-buscarCliente:unaPos	
-	(unaPos between: 1 and: self cantClientes )
-	ifTrue: [^ clientes at:unaPos ]
-	ifFalse:[^ nil]!
+buscarClientePorId: unId
+	^ productos detect:
+		[:cadaCliente | cadaCliente getId = unId]
+		ifNone:[nil]!
 
-buscarEmpleado:unaPos
-	((unaPos between: 1 and:self cantEmpleados) and: [(empleados at:unaPos) ~= nil])
-	ifTrue: [^ empleados at:unaPos]
-	ifFalse:[^ nil]!
+buscarEmpleadoPorLegajo: unLegajo
+	^ empleados detect:
+		[:cadaEmpleado | cadaEmpleado getLegajo = unLegajo]
+		ifNone:[nil]!
 
-buscarProd: unaPos
-	((unaPos between: 1 and:self cantProds ) and: [(empleados at:unaPos) ~= nil])
-	ifTrue: [^ productos at:unaPos]
-	ifFalse:[^ nil]!
+buscarProductoPorId: unId
+	^ productos detect:
+		[:cadaProducto | cadaProducto getId = unId]
+		ifNone:[nil]!
 
-buscarProveedor:unaPos	
-	(unaPos between: 1 and: self cantProveedores )
-	ifTrue: [^ proveedores at:unaPos ]
-	ifFalse:[^ nil]!
+buscarProveedorPorId: unId	
+	^ proveedores detect: 
+		[ :cadaProveedor | cadaProveedor getId=unId ]
+		ifNone:[nil]!
 
 cantClientes
 	^ clientes size!
@@ -276,49 +374,17 @@ cantProds
 cantProveedores
 	^ proveedores size!
 
-elimCliente:unCliente
-	(clientes includes: unCliente)
-	ifTrue: [^ clientes remove:unCliente]
-	ifFalse:[^ nil]!
+elimCliente: unCliente
+	clientes remove: unCliente ifAbsent:[nil]!
 
-elimEmpleado:unEmpleado
-	(productos includes: unEmpleado)
-	ifTrue: [^ productos remove: unEmpleado]
-	ifFalse:[ ^ nil]!
+elimEmpleado: unEmpleado
+	clientes remove: unEmpleado ifAbsent:[nil]!
 
 elimProducto: unProducto
-	(productos includes: unProducto)
-		ifTrue: [^ productos remove:unProducto ]
-		ifFalse:[ ^ nil]!
+	clientes remove: unProducto ifAbsent:[nil]!
 
-elimProveedor:unProveedor
-	(proveedores includes:unProveedor )
-	ifTrue: [^ proveedores remove:unProveedor]
-	ifFalse:[^ nil]!
-
-modCliente:unaPos nuevoCliente:unCliente
-	((unaPos between: 1 and: self cantClientes) and: [(empleados at:unaPos) ~= nil])
-	ifTrue: [^ empleados at:unaPos put:unCliente ]
-	ifFalse:[^ nil]!
-
-modEmpleado:unaPos nuevoEmpleado:unEmpleado
-	((unaPos between: 1 and: self cantEmpleados) and: [(empleados at: unaPos)~= nil])
-	ifTrue: [empleados at:unaPos put:unEmpleado]
-	ifFalse:[^ nil]!
-
-modProd: unaPos nuevoProd: nuevoProd
-	(unaPos between: 1 and: self cantProds)
-		ifTrue: [
-			productos at: unaPos put: nuevoProd. 
-			^ true "Imprimimos true porque la modificacion fue exitosa"
-		]
-		ifFalse: [ ^ false ] " Devolvemos false porque la posición no existía"!
-
-modProveedor: unaPos nuevoProveedor:unProveedor
-	((unaPos between: 1 and: self cantProveedores) and: [(proveedores at:unaPos) notNil])
-	ifTrue: [^ proveedores at:unaPos put:unProveedor]
-	ifFalse:[^ nil]
-	!
+elimProveedor: unProveedor
+	clientes remove: unProveedor ifAbsent:[nil]!
 
 verClientes
 	^ clientes!
@@ -337,10 +403,10 @@ aggCliente:!public! !
 aggEmpleado:!public! !
 aggProducto:!public! !
 aggProveedor:!public! !
-buscarCliente:!public! !
-buscarEmpleado:!public! !
-buscarProd:!public! !
-buscarProveedor:!public! !
+buscarClientePorId:!public! !
+buscarEmpleadoPorLegajo:!public! !
+buscarProductoPorId:!public! !
+buscarProveedorPorId:!public! !
 cantClientes!public! !
 cantEmpleados!public! !
 cantProds!public! !
@@ -349,10 +415,6 @@ elimCliente:!public! !
 elimEmpleado:!public! !
 elimProducto:!public! !
 elimProveedor:!public! !
-modCliente:nuevoCliente:!public! !
-modEmpleado:nuevoEmpleado:!public! !
-modProd:nuevoProd:!public! !
-modProveedor:nuevoProveedor:!public! !
 verClientes!public! !
 verEmpleados!public! !
 verProductos!public! !
