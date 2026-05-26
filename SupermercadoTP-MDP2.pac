@@ -88,6 +88,9 @@ actualizarApellido:nuevoApellido
 actualizarClave:nuevaClave
 	clave := nuevaClave.!
 
+actualizarDni: unDni
+	dni := unDni.!
+
 actualizarNombre: unNombre
 	nombre := unNombre.!
 
@@ -100,32 +103,12 @@ elimCompra: unaCompra
 getDni
 	^ dni!
 
+getNombre
+	^ nombre!
+
 initialize
 	super initialize.
 	compras := OrderedCollection new.!
-
-modificarApellidoCliente: unDni nuevoApellido: unApellido
-	| cliente |
-	
-	cliente := self buscarClientePorDni: unDni. "<- Usamos el método correcto por posición"
-	
-	cliente ~= nil ifTrue: [ cliente actualizarApellido: unApellido ]!
-
-modificarClaveCliente: unDni nuevaClave: unaClave
-	| cliente |
-	
-	cliente := self buscarClientePorDni: unDni.
-	
-	cliente ~= nil ifTrue:[
-		cliente actualizarClave: unaClave
-	]!
-
-modificarNombreCliente: unDni nuevoNombre: unNombre
-	| cliente |
-	
-	cliente := self buscarClientePorDni: unDni. "<- Usamos el método correcto por posición"
-	
-	cliente ~= nil ifTrue: [ cliente actualizarNombre:  unNombre ]!
 
 verCompras
 	compras do: [:compra| Transcript show: compra printString; cr]! !
@@ -133,14 +116,13 @@ verCompras
 !Cliente categoriesForMethods!
 actualizarApellido:!public! !
 actualizarClave:!public! !
+actualizarDni:!public! !
 actualizarNombre:!public! !
 aggCompra:!public! !
 elimCompra:!public! !
 getDni!public! !
+getNombre!public! !
 initialize!public! !
-modificarApellidoCliente:nuevoApellido:!public! !
-modificarClaveCliente:nuevaClave:!public! !
-modificarNombreCliente:nuevoNombre:!public! !
 verCompras!public! !
 !
 
@@ -253,7 +235,7 @@ aumentarStock:cant
 	(cant>0)
 		ifTrue: [
 			stock := stock + cant.
-			Transcript show:'Stock actualizado correctamente'
+			Transcript show:' Stock actualizado correctamente '
 		]
 		ifFalse:[	
 			Transcript show:'Ingrese una cantidad valida'
@@ -262,16 +244,16 @@ aumentarStock:cant
 disminuirStock:cant
 	(cant <= 0)
 		ifTrue:[
-			Transcript show:'Ingrese una cantidad valida '
+			Transcript show:' Ingrese una cantidad valida '
 		]
 		ifFalse:[
 			(cant > stock)
 				ifTrue:[
-					Transcript show:'No hay suficiente stock '
+					Transcript show:' No hay suficiente stock '
 				]
 				ifFalse:[
 					stock := stock - cant.
-					Transcript show:'Stock actualizado correctamente '
+					Transcript show:' Stock actualizado correctamente '
 				]
 		]!
 
@@ -284,6 +266,11 @@ getNombre
 getPrecio
 	^ precio!
 
+initialize
+	super initialize.
+	
+	stock := 0.!
+
 verStock
 	^ stock! !
 
@@ -295,6 +282,7 @@ disminuirStock:!public! !
 getId!public! !
 getNombre!public! !
 getPrecio!public! !
+initialize!public! !
 verStock!public! !
 !
 
@@ -342,9 +330,9 @@ aggProducto:unProducto
 aggProveedor:unProveedor	
 	proveedores add:unProveedor!
 
-buscarClientePorId: unId
-	^ productos detect:
-		[:cadaCliente | cadaCliente getId = unId]
+buscarClientePorDni: unDni
+	^ clientes detect:
+		[:cadaCliente | cadaCliente getDni = unDni]
 		ifNone:[nil]!
 
 buscarEmpleadoPorLegajo: unLegajo
@@ -386,6 +374,14 @@ elimProducto: unProducto
 elimProveedor: unProveedor
 	clientes remove: unProveedor ifAbsent:[nil]!
 
+initialize
+	super initialize.
+	
+	clientes := OrderedCollection new.
+	empleados := OrderedCollection new.
+	productos := OrderedCollection new.
+	proveedores := OrderedCollection new.!
+
 verClientes
 	^ clientes!
 
@@ -403,7 +399,7 @@ aggCliente:!public! !
 aggEmpleado:!public! !
 aggProducto:!public! !
 aggProveedor:!public! !
-buscarClientePorId:!public! !
+buscarClientePorDni:!public! !
 buscarEmpleadoPorLegajo:!public! !
 buscarProductoPorId:!public! !
 buscarProveedorPorId:!public! !
@@ -415,6 +411,7 @@ elimCliente:!public! !
 elimEmpleado:!public! !
 elimProducto:!public! !
 elimProveedor:!public! !
+initialize!public! !
 verClientes!public! !
 verEmpleados!public! !
 verProductos!public! !
