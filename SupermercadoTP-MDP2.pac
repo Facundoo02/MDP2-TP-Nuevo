@@ -19,7 +19,9 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin').
+	'..\..\Pictures\Core\Object Arts\Dolphin\Base\Dolphin'
+	'..\..\Pictures\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
+	'..\..\Pictures\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
 
 package!
 
@@ -50,7 +52,7 @@ Object subclass: #Producto
 	classInstanceVariableNames: ''!
 
 Object subclass: #Proveedor
-	instanceVariableNames: 'id nombre'
+	instanceVariableNames: 'id nombre productos'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -207,6 +209,39 @@ disminuirStock:cant
 getPrecio
 	^ precio!
 
+id
+    ^id!
+
+id: unNumero
+	id := unNumero.
+	^self!
+
+initialize
+	super initialize.
+	stock := 0.
+	precio := 0.!
+
+nombre
+    ^nombre!
+
+nombre: unTexto
+	nombre := unTexto.
+	^self!
+
+precio
+    ^precio!
+
+precio: unNumero
+	precio := unNumero.
+	^self!
+
+stock
+    ^stock!
+
+stock: unNumero
+	stock :=unNumero.
+	^self!
+
 verStock
 	^ stock! !
 
@@ -215,6 +250,15 @@ actualizarPrecio:!public! !
 aumentarStock:!public! !
 disminuirStock:!public! !
 getPrecio!public! !
+id!public! !
+id:!public! !
+initialize!public! !
+nombre!public! !
+nombre:!public! !
+precio!public! !
+precio:!public! !
+stock!public! !
+stock:!public! !
 verStock!public! !
 !
 
@@ -223,6 +267,81 @@ Proveedor guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
 Proveedor comment: ''!
 
 !Proveedor categoriesForClass!SupermercadoTP-MDP2! !
+
+!Proveedor methodsFor!
+
+addProducto: unProducto
+    productos add: unProducto.!
+
+id
+	^id!
+
+id: unNumero
+	id := unNumero.
+	^self!
+
+initialize
+	super initialize.
+	productos := OrderedCollection new.
+	!
+
+nombre
+	^nombre!
+
+nombre: unTexto
+	nombre := unTexto.
+	^self!
+
+productos
+	^productos!
+
+suministrarProductos: unPedido a: unSuper
+	| id cant producto |
+	unPedido do: [ :prod |
+		id := prod first.
+		cant := prod second.
+		producto := productos
+			detect: [ :p | p id = id ]
+			ifNone: [ nil ].  
+		producto ifNotNil: [
+			unSuper
+				recibirProducto: producto
+				cantidad: cant.
+			Transcript
+				show: 'Proveedor suministro ';
+				show: producto nombre;
+				show: ' cantidad ';
+				show: cant printString;
+				cr.
+		].
+		producto ifNil: [
+			Transcript
+			show: 'Proveedor tiene producto con id ';
+			show: id printString;
+			cr.
+		].
+	].
+	! !
+
+!Proveedor categoriesForMethods!
+addProducto:!public! !
+id!public! !
+id:!public! !
+initialize!public! !
+nombre!public! !
+nombre:!public! !
+productos!public! !
+suministrarProductos:a:!public! !
+!
+
+!Proveedor class methodsFor!
+
+new
+    ^super new initialize! !
+
+!Proveedor class categoriesForMethods!
+new!public! !
+!
 
 Supermercado guid: (GUID fromString: '{3707201f-c80f-429c-8830-7f6096715cea}')!
 
@@ -296,6 +415,60 @@ elimProveedor:unProveedor
 	ifTrue: [^ proveedores remove:unProveedor]
 	ifFalse:[^ nil]!
 
+initialize
+	| prov1 p1 p2 |
+	super initialize.
+	Transcript show: 'INITIALIZE EJECUTADO'; cr.
+	empleados := OrderedCollection new.
+	productos := OrderedCollection new.
+	clientes := OrderedCollection new.
+	proveedores := OrderedCollection new.
+	p1 := Producto new id: 101; nombre: 'arroz'; stock: 10; precio: 12.
+	p2 := Producto new id: 102; nombre: 'fideo'; stock: 15; precio: 15.
+	productos add: p1.
+	productos add: p2.
+	prov1 := Proveedor new id: 01; nombre: 'pablo scobar'.
+	prov1 addProducto: p1.
+	prov1 addProducto: p2.
+	proveedores add: prov1.
+	!
+
+menu
+	| opc salir texto |
+	salir := false.
+	[salir] whileFalse: [
+		Transcript clear. 
+		Transcript show: '1 - Vet stock'; cr.
+		Transcript show: '2 - realizar Pedido'; cr.
+		Transcript show: 'S - Salir'; cr.
+		texto :=Prompter prompt: 'Ingresa opcion' .
+		(texto isNil or: [ texto asUppercase = 'S' ])
+			ifTrue: [
+				salir := true
+			]
+			ifFalse: [
+				[ opc := texto asNumber ] on: Error do: [ :ex | opc := 0 ].
+				(opc between: 1 and: 2)
+					ifTrue: [
+						opc = 1 ifTrue: [
+							Transcript clear.
+							Transcript show: 'STOCK'; cr.
+							self verStock.
+							Prompter prompt: 'Presione ENTER para volver al menú'.
+						].
+						opc = 2 ifTrue: [
+							Transcript clear.
+							Transcript show: 'PEDIDO'; cr.
+							self realizarPedido.
+							Prompter prompt: 'Presione ENTER para volver al menú'.
+						].
+					]
+					ifFalse: [
+						MessageBox notify: 'opcion incorrecta' .
+					].
+ 			].
+	].!
+
 modCliente:unaPos nuevoCliente:unCliente
 	((unaPos between: 1 and: self cantClientes) and: [(empleados at:unaPos) ~= nil])
 	ifTrue: [^ empleados at:unaPos put:unCliente ]
@@ -320,6 +493,22 @@ modProveedor: unaPos nuevoProveedor:unProveedor
 	ifFalse:[^ nil]
 	!
 
+realizarPedido
+	| pedido |
+	pedido := OrderedCollection new.
+	pedido add: #(101 5).
+	pedido add: #(102 3).
+	proveedores first suministrarProductos: pedido a: self.!
+
+recibirProducto: unProducto cantidad: unaCantidad
+	| prod | 
+	prod := productos
+		detect: [ :p | p id = unProducto id ]		
+		ifNone: [ nil ].
+	prod ifNotNil: [
+		prod stock: prod stock + unaCantidad.
+	].!
+
 verClientes
 	^ clientes!
 
@@ -327,10 +516,20 @@ verEmpleados
 	^ empleados!
 
 verProductos
-^productos!
+	^productos!
 
 verProveedores
-	^ proveedores! !
+	^ proveedores!
+
+verStock
+	Transcript show: 'P'.
+	(self verProductos ifNil: [ OrderedCollection new ]) do: [ :prod |
+        Transcript
+            show: 'Producto: ', prod nombre;
+            show: ' stock: ', prod stock printString;
+            show: ' ID: ', prod id printString;
+            cr.
+	].! !
 
 !Supermercado categoriesForMethods!
 aggCliente:!public! !
@@ -349,14 +548,28 @@ elimCliente:!public! !
 elimEmpleado:!public! !
 elimProducto:!public! !
 elimProveedor:!public! !
+initialize!public! !
+menu!public! !
 modCliente:nuevoCliente:!public! !
 modEmpleado:nuevoEmpleado:!public! !
 modProd:nuevoProd:!public! !
 modProveedor:nuevoProveedor:!public! !
+realizarPedido!public! !
+recibirProducto:cantidad:!public! !
 verClientes!public! !
 verEmpleados!public! !
 verProductos!public! !
 verProveedores!public! !
+verStock!public! !
+!
+
+!Supermercado class methodsFor!
+
+new
+    ^super new initialize! !
+
+!Supermercado class categoriesForMethods!
+new!public! !
 !
 
 "Binary Globals"!
