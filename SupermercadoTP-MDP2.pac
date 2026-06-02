@@ -100,6 +100,9 @@ aggCompra:unaCompra
 elimCompra: unaCompra
 	compras remove:unaCompra ifAbsent:[nil]!
 
+getCompras
+	^ compras!
+
 getDni
 	^ dni!
 
@@ -120,6 +123,7 @@ actualizarDni:!public! !
 actualizarNombre:!public! !
 aggCompra:!public! !
 elimCompra:!public! !
+getCompras!public! !
 getDni!public! !
 getNombre!public! !
 initialize!public! !
@@ -266,12 +270,12 @@ getNombre
 getPrecio
 	^ precio!
 
+getStock
+	^ stock!
+
 initialize
 	super initialize.
-	stock := 0.!
-
-verStock
-	^ stock! !
+	stock := 0.! !
 
 !Producto categoriesForMethods!
 actualizarNombre:!public! !
@@ -281,8 +285,8 @@ disminuirStock:!public! !
 getId!public! !
 getNombre!public! !
 getPrecio!public! !
+getStock!public! !
 initialize!public! !
-verStock!public! !
 !
 
 Proveedor guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
@@ -361,20 +365,23 @@ cantProds
 cantProveedores
 	^ proveedores size!
 
-contarProductosSinStock
-	^ (productos select: [:producto | producto verStock = 0]) size!
+clientesFrecuentes
+	^ clientes select: [:cliente | cliente getCompras size > 2]!
+
+clientesSinCompras
+	^ clientes reject: [:cliente | cliente getCompras size >0 ]!
 
 elimCliente: unCliente
 	clientes remove: unCliente ifAbsent:[nil]!
 
 elimEmpleado: unEmpleado
-	clientes remove: unEmpleado ifAbsent:[nil]!
+	empleados remove: unEmpleado ifAbsent:[nil]!
 
 elimProducto: unProducto
-	clientes remove: unProducto ifAbsent:[nil]!
+	productos remove: unProducto ifAbsent:[nil]!
 
 elimProveedor: unProveedor
-	clientes remove: unProveedor ifAbsent:[nil]!
+	proveedores remove: unProveedor ifAbsent:[nil]!
 
 initialize
 	super initialize.
@@ -384,6 +391,18 @@ initialize
 	productos := OrderedCollection new.
 	proveedores := OrderedCollection new.!
 
+ObtenerNombresProducto
+	^  productos collect: [: producto | producto getNombre ]!
+
+ObtenerPrecioProducto
+	^productos collect: [:producto | producto getPrecio]!
+
+productoConPocoStock
+	^ productos reject: [:producto | producto getStock >10 ]!
+
+ProductosSinStock
+	^ (productos select: [:producto | producto getStock = 0])
+		collect: [:producto | producto  getNombre ]!
 realizarPedido
 	| pedido |
 	pedido := OrderedCollection new.
@@ -435,12 +454,17 @@ cantClientes!public! !
 cantEmpleados!public! !
 cantProds!public! !
 cantProveedores!public! !
-contarProductosSinStock!public! !
+clientesFrecuentes!public! !
+clientesSinCompras!public! !
 elimCliente:!public! !
 elimEmpleado:!public! !
 elimProducto:!public! !
 elimProveedor:!public! !
 initialize!public! !
+ObtenerNombresProducto!public! !
+ObtenerPrecioProducto!public! !
+productoConPocoStock!public! !
+ProductosSinStock!public! !
 verClientes!public! !
 verEmpleados!public! !
 verProductos!public! !
