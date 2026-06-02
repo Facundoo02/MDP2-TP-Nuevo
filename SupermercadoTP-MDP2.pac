@@ -268,7 +268,6 @@ getPrecio
 
 initialize
 	super initialize.
-	
 	stock := 0.!
 
 verStock
@@ -322,7 +321,7 @@ aggCliente:unCliente
 	clientes add:unCliente!
 
 aggEmpleado:unEmpleado
-	productos add: unEmpleado!
+	empleados add: unEmpleado!
 
 aggProducto:unProducto
 	productos add:unProducto!
@@ -361,6 +360,9 @@ cantProds
 
 cantProveedores
 	^ proveedores size!
+
+contarProductosSinStock
+	^ (productos select: [:producto | producto verStock = 0]) size!
 
 elimCliente: unCliente
 	clientes remove: unCliente ifAbsent:[nil]!
@@ -433,6 +435,7 @@ cantClientes!public! !
 cantEmpleados!public! !
 cantProds!public! !
 cantProveedores!public! !
+contarProductosSinStock!public! !
 elimCliente:!public! !
 elimEmpleado:!public! !
 elimProducto:!public! !
