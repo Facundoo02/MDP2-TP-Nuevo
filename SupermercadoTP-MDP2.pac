@@ -57,7 +57,7 @@ Object subclass: #Producto
 	classInstanceVariableNames: ''!
 
 Object subclass: #Proveedor
-	instanceVariableNames: 'id nombre'
+	instanceVariableNames: 'id nombre productos'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -403,6 +403,21 @@ productoConPocoStock
 ProductosSinStock
 	^ (productos select: [:producto | producto getStock = 0])
 		collect: [:producto | producto  getNombre ]!
+realizarPedido
+	| pedido |
+	pedido := OrderedCollection new.
+	pedido add: #(101 5).
+	pedido add: #(102 3).
+	proveedores first suministrarProductos: pedido a: self.!
+
+recibirProducto: unProducto cantidad: unaCantidad
+	| prod | 
+	prod := productos
+		detect: [ :p | p id = unProducto id ]		
+		ifNone: [ nil ].
+	prod ifNotNil: [
+		prod stock: prod stock + unaCantidad.
+	].!
 
 verClientes
 	^ clientes!
@@ -411,10 +426,20 @@ verEmpleados
 	^ empleados!
 
 verProductos
-^productos!
+	^productos!
 
 verProveedores
-	^ proveedores! !
+	^ proveedores!
+
+verStock
+	Transcript show: 'P'.
+	(self verProductos ifNil: [ OrderedCollection new ]) do: [ :prod |
+        Transcript
+            show: 'Producto: ', prod nombre;
+            show: ' stock: ', prod stock printString;
+            show: ' ID: ', prod id printString;
+            cr.
+	].! !
 
 !Supermercado categoriesForMethods!
 aggCliente:!public! !
@@ -444,6 +469,16 @@ verClientes!public! !
 verEmpleados!public! !
 verProductos!public! !
 verProveedores!public! !
+verStock!public! !
+!
+
+!Supermercado class methodsFor!
+
+new
+    ^super new initialize! !
+
+!Supermercado class categoriesForMethods!
+new!public! !
 !
 
 "Binary Globals"!
