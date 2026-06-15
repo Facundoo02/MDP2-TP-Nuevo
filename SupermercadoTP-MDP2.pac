@@ -20,7 +20,7 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin').
+	'..\..\Users\axelp\OneDrive\Desktop\dolphin\Core\Object Arts\Dolphin\Base\Dolphin').
 
 package!
 
@@ -361,6 +361,12 @@ cantProds
 cantProveedores
 	^ proveedores size!
 
+clientesFrecuentes
+    ^ clientes select: [:cliente | cliente getCompras size > 2]!
+
+clientesSinCompras
+    ^ clientes reject: [:cliente | cliente getCompras size > 0]!
+
 contarProductosSinStock
 	^ (productos select: [:producto | producto verStock = 0]) size!
 
@@ -368,13 +374,13 @@ elimCliente: unCliente
 	clientes remove: unCliente ifAbsent:[nil]!
 
 elimEmpleado: unEmpleado
-	clientes remove: unEmpleado ifAbsent:[nil]!
+    empleados remove: unEmpleado ifAbsent: [nil]!
 
 elimProducto: unProducto
-	clientes remove: unProducto ifAbsent:[nil]!
+    productos remove: unProducto ifAbsent: [nil]!
 
 elimProveedor: unProveedor
-	clientes remove: unProveedor ifAbsent:[nil]!
+    proveedores remove: unProveedor ifAbsent: [nil]!
 
 initialize
 	super initialize.
@@ -383,6 +389,19 @@ initialize
 	empleados := OrderedCollection new.
 	productos := OrderedCollection new.
 	proveedores := OrderedCollection new.!
+
+ObtenerNombresProducto
+    ^ productos collect: [:producto | producto getNombre]!
+
+ObtenerPrecioProducto
+    ^ productos collect: [:producto | producto getPrecio]!
+
+productoConPocoStock
+    ^ productos reject: [:producto | producto getStock > 10]!
+
+ProductosSinStock
+    ^ (productos select: [:producto | producto getStock = 0])
+        collect: [:producto | producto getNombre]!
 
 realizarPedido
 	| pedido |
@@ -435,12 +454,18 @@ cantClientes!public! !
 cantEmpleados!public! !
 cantProds!public! !
 cantProveedores!public! !
+clientesFrecuentes!public! !
+clientesSinCompras!public! !
 contarProductosSinStock!public! !
 elimCliente:!public! !
 elimEmpleado:!public! !
 elimProducto:!public! !
 elimProveedor:!public! !
 initialize!public! !
+ObtenerNombresProducto!public! !
+ObtenerPrecioProducto!public! !
+productoConPocoStock!public! !
+ProductosSinStock!public! !
 realizarPedido!public! !
 recibirProducto:cantidad:!public! !
 verClientes!public! !
