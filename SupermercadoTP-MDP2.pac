@@ -20,7 +20,7 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\..\Users\axelp\OneDrive\Desktop\dolphin\Core\Object Arts\Dolphin\Base\Dolphin').
+	'..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin').
 
 package!
 
@@ -100,9 +100,6 @@ aggCompra:unaCompra
 elimCompra: unaCompra
 	compras remove:unaCompra ifAbsent:[nil]!
 
-getCompras
-	^ compras!
-
 getDni
 	^ dni!
 
@@ -123,7 +120,6 @@ actualizarDni:!public! !
 actualizarNombre:!public! !
 aggCompra:!public! !
 elimCompra:!public! !
-getCompras!public! !
 getDni!public! !
 getNombre!public! !
 initialize!public! !
@@ -270,12 +266,12 @@ getNombre
 getPrecio
 	^ precio!
 
-getStock
-	^ stock!
-
 initialize
 	super initialize.
-	stock := 0.! !
+	stock := 0.!
+
+verStock
+	^ stock! !
 
 !Producto categoriesForMethods!
 actualizarNombre:!public! !
@@ -285,8 +281,8 @@ disminuirStock:!public! !
 getId!public! !
 getNombre!public! !
 getPrecio!public! !
-getStock!public! !
 initialize!public! !
+verStock!public! !
 !
 
 Proveedor guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
@@ -365,23 +361,20 @@ cantProds
 cantProveedores
 	^ proveedores size!
 
-clientesFrecuentes
-	^ clientes select: [:cliente | cliente getCompras size > 2]!
-
-clientesSinCompras
-	^ clientes reject: [:cliente | cliente getCompras size >0 ]!
+contarProductosSinStock
+	^ (productos select: [:producto | producto verStock = 0]) size!
 
 elimCliente: unCliente
 	clientes remove: unCliente ifAbsent:[nil]!
 
 elimEmpleado: unEmpleado
-	empleados remove: unEmpleado ifAbsent:[nil]!
+	clientes remove: unEmpleado ifAbsent:[nil]!
 
 elimProducto: unProducto
-	productos remove: unProducto ifAbsent:[nil]!
+	clientes remove: unProducto ifAbsent:[nil]!
 
 elimProveedor: unProveedor
-	proveedores remove: unProveedor ifAbsent:[nil]!
+	clientes remove: unProveedor ifAbsent:[nil]!
 
 initialize
 	super initialize.
@@ -391,18 +384,6 @@ initialize
 	productos := OrderedCollection new.
 	proveedores := OrderedCollection new.!
 
-ObtenerNombresProducto
-	^  productos collect: [: producto | producto getNombre ]!
-
-ObtenerPrecioProducto
-	^productos collect: [:producto | producto getPrecio]!
-
-productoConPocoStock
-	^ productos reject: [:producto | producto getStock >10 ]!
-
-ProductosSinStock
-	^ (productos select: [:producto | producto getStock = 0])
-		collect: [:producto | producto  getNombre ]!
 realizarPedido
 	| pedido |
 	pedido := OrderedCollection new.
@@ -454,17 +435,14 @@ cantClientes!public! !
 cantEmpleados!public! !
 cantProds!public! !
 cantProveedores!public! !
-clientesFrecuentes!public! !
-clientesSinCompras!public! !
+contarProductosSinStock!public! !
 elimCliente:!public! !
 elimEmpleado:!public! !
 elimProducto:!public! !
 elimProveedor:!public! !
 initialize!public! !
-ObtenerNombresProducto!public! !
-ObtenerPrecioProducto!public! !
-productoConPocoStock!public! !
-ProductosSinStock!public! !
+realizarPedido!public! !
+recibirProducto:cantidad:!public! !
 verClientes!public! !
 verEmpleados!public! !
 verProductos!public! !
