@@ -20,7 +20,8 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\..\Users\axelp\OneDrive\Desktop\dolphin\Core\Object Arts\Dolphin\Base\Dolphin').
+	'..\..\Users\axelp\OneDrive\Desktop\dolphin\Core\Object Arts\Dolphin\Base\Dolphin'
+	'..\..\Users\axelp\OneDrive\Desktop\dolphin\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time').
 
 package!
 
@@ -51,7 +52,7 @@ Object subclass: #Empleado
 	classInstanceVariableNames: ''!
 
 Object subclass: #Producto
-	instanceVariableNames: 'id nombre stock precio'
+	instanceVariableNames: 'id nombre stock precio genero'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -134,6 +135,9 @@ Compra comment: ''!
 
 !Compra methodsFor!
 
+aggDetalle: unDetalle
+    detalles add: unDetalle.!
+
 calcularTotal
 	|total| "Defino una variable para ir acumulando el total"
 
@@ -152,14 +156,35 @@ confirmarCompra
 	cliente aggCompra: self.
 	estado := 'Confirmado'.!
 
+initialize
+    detalles := OrderedCollection new.
+    monto := 0. 
+    estado := 'Pendiente'.
+    fecha := Date today.!
+
+verDetalles
+    ^ detalles.!
+
 verProductos
 	 detalles do: [:detalle | Transcript show: detalle verProducto ]! !
 
 !Compra categoriesForMethods!
+aggDetalle:!public! !
 calcularTotal!public! !
 cancelarCompra!public! !
 confirmarCompra!public! !
+initialize!public! !
+verDetalles!public! !
 verProductos!public! !
+!
+
+!Compra class methodsFor!
+
+new
+    ^ super new initialize! !
+
+!Compra class categoriesForMethods!
+new!public! !
 !
 
 DetalleCompra guid: (GUID fromString: '{754090d8-d4f6-4654-9359-0aaf2e1a9166}')!
@@ -170,15 +195,35 @@ DetalleCompra comment: ''!
 
 !DetalleCompra methodsFor!
 
+actualizarCantidad: unaCantidad
+    cantidad := unaCantidad.!
+
+actualizarProducto: unProducto
+    producto := unProducto.!
+
+actualizarSubtotal: unSubtotal
+    subtotal := unSubtotal.!
+
 calcularSubTotal
 	^ cantidad * producto getPrecio!
 
+verCantidad
+    ^ cantidad.!
+
 verProducto	
-	^ producto! !
+	^ producto!
+
+verSubtotal
+    ^ subtotal.! !
 
 !DetalleCompra categoriesForMethods!
+actualizarCantidad:!public! !
+actualizarProducto:!public! !
+actualizarSubtotal:!public! !
 calcularSubTotal!public! !
+verCantidad!public! !
 verProducto!public! !
+verSubtotal!public! !
 !
 
 Empleado guid: (GUID fromString: '{b2b69d51-dba4-497c-a5f1-0320255ac601}')!
@@ -220,6 +265,12 @@ Producto comment: ''!
 
 !Producto methodsFor!
 
+actualizarGenero: unGenero
+    genero := unGenero.!
+
+actualizarId: unId
+    id := unId.!
+
 actualizarNombre: nuevoNombre
 	nombre:=nuevoNombre.!
 
@@ -257,6 +308,9 @@ disminuirStock:cant
 				]
 		]!
 
+getGenero
+    ^ genero.!
+
 getId
 	^ id!
 
@@ -267,22 +321,34 @@ getPrecio
 	^ precio!
 
 initialize
-	super initialize.
-	stock := 0.!
+    super initialize.
+    stock := 0.!
 
 verStock
 	^ stock! !
 
 !Producto categoriesForMethods!
+actualizarGenero:!public! !
+actualizarId:!public! !
 actualizarNombre:!public! !
 actualizarPrecio:!public! !
 aumentarStock:!public! !
 disminuirStock:!public! !
+getGenero!public! !
 getId!public! !
 getNombre!public! !
 getPrecio!public! !
 initialize!public! !
 verStock!public! !
+!
+
+!Producto class methodsFor!
+
+new
+    ^ super new initialize! !
+
+!Producto class categoriesForMethods!
+new!public! !
 !
 
 Proveedor guid: (GUID fromString: '{f28e2003-7980-4da3-8518-e69182e5020a}')!
@@ -396,6 +462,9 @@ ObtenerNombresProducto
 ObtenerPrecioProducto
     ^ productos collect: [:producto | producto getPrecio]!
 
+obtenerProductosPorGenero: unGenero
+    ^ productos select: [:prod | prod getGenero = unGenero].!
+
 productoConPocoStock
     ^ productos reject: [:producto | producto getStock > 10]!
 
@@ -464,6 +533,7 @@ elimProveedor:!public! !
 initialize!public! !
 ObtenerNombresProducto!public! !
 ObtenerPrecioProducto!public! !
+obtenerProductosPorGenero:!public! !
 productoConPocoStock!public! !
 ProductosSinStock!public! !
 realizarPedido!public! !
