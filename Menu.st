@@ -18,7 +18,6 @@ prod2 aumentarStock: 15.
 prod2 actualizarId: 10.
 
 miSupermercado := Supermercado new.
-miSupermercado cambiarNombre: 'SuperMas'.
 miSupermercado aggProducto: prod1.
 miSupermercado aggProducto: prod2.
 
